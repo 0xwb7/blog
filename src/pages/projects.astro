@@ -1,0 +1,67 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const projects = [
+
+];
+---
+
+<BaseLayout
+  title="Projects | 0xb7_blog"
+>
+
+  <header class="mb-12">
+
+    <h1 class="text-4xl font-bold">
+      Projects
+    </h1>
+
+  </header>
+
+  <div class="space-y-6">
+
+    {
+      projects.map((project) => (
+
+        <article
+          class="rounded-xl border border-zinc-200 p-6"
+        >
+
+          <h2
+            class="text-2xl font-semibold"
+          >
+            {project.name}
+          </h2>
+
+          <p
+            class="mt-3 leading-7 text-zinc-600"
+          >
+            {project.description}
+          </p>
+
+          <div
+            class="mt-5 flex flex-wrap gap-2"
+          >
+
+            {
+              project.stack.map((technology) => (
+
+                <span
+                  class="rounded-md bg-zinc-100 px-2.5 py-1 text-xs"
+                >
+                  {technology}
+                </span>
+
+              ))
+            }
+
+          </div>
+
+        </article>
+
+      ))
+    }
+
+  </div>
+
+</BaseLayout>

@@ -1,0 +1,164 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+import {
+  getCollection,
+  render,
+} from "astro:content";
+
+export async function getStaticPaths() {
+
+  const posts = await getCollection(
+    "blog",
+    ({ data }) => !data.draft
+  );
+
+  return posts.map((post) => ({
+    params: {
+      id: post.id,
+    },
+
+    props: {
+      post,
+    },
+  }));
+}
+
+const { post } = Astro.props;
+
+const { Content, headings } = await render(post);
+const sections = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+<BaseLayout
+  title={`${post.data.title} | 0xb7_blog`}
+  description={post.data.description}
+>
+
+  <article
+    class="mx-auto max-w-3xl"
+  >
+
+    <header class="mb-12">
+
+      <a
+        href={`/categories/${post.data.category.toLowerCase()}`}
+        class="text-sm font-medium text-zinc-500 transition hover:text-black"
+      >
+        {post.data.category}
+      </a>
+
+      <h1
+        class="mt-4 text-4xl font-bold leading-tight tracking-tight"
+      >
+        {post.data.title}
+      </h1>
+
+      <p
+        class="mt-5 text-lg leading-8 text-zinc-500"
+      >
+        {post.data.description}
+      </p>
+
+      <div
+        class="mt-5 flex items-center gap-3"
+      >
+
+        <time
+          datetime={post.data.pubDate.toISOString()}
+          class="text-sm text-zinc-500"
+        >
+          {
+            post.data.pubDate.toLocaleDateString(
+              "ko-KR",
+              {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }
+            )
+          }
+        </time>
+
+      </div>
+
+      <div
+        class="mt-5 flex flex-wrap gap-2"
+      >
+
+        {
+          post.data.tags.map((tag) => (
+
+            <span
+              class="rounded-md bg-zinc-100 px-2.5 py-1 text-xs text-zinc-600"
+            >
+              #{tag}
+            </span>
+
+          ))
+        }
+
+      </div>
+
+    </header>
+
+    {sections.length > 0 && (
+      <nav aria-label="글 목차" class="toc mb-10">
+        <details open={sections.length <= 12}>
+          <summary>목차</summary>
+          <ul>
+            {sections.map((heading) => (
+              <li class:list={{ "toc-subheading": heading.depth === 3 }}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      </nav>
+    )}
+
+    <div
+      class="post-content prose prose-zinc max-w-none"
+    >
+      <Content />
+    </div>
+
+    <p id="copy-status" class="sr-only" role="status" aria-live="polite"></p>
+    <footer class="mt-12 border-t border-zinc-200 pt-6">
+      <a href="/posts" class="text-sm font-medium text-zinc-600 hover:text-zinc-900">← 모든 글 보기</a>
+    </footer>
+  </article>
+
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLPreElement>(".post-content pre").forEach((pre) => {
+    const code = pre.querySelector("code");
+    if (!code || !navigator.clipboard?.writeText) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "code-block";
+    pre.before(wrapper);
+    const toolbar = document.createElement("div");
+    toolbar.className = "code-toolbar";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "copy-code";
+    button.textContent = "코드 복사";
+    toolbar.append(button);
+    wrapper.append(toolbar, pre);
+
+    button.addEventListener("click", async () => {
+      const status = document.getElementById("copy-status");
+      try {
+        await navigator.clipboard.writeText(code.textContent ?? "");
+        button.textContent = "복사 완료";
+        if (status) status.textContent = "코드를 복사했습니다.";
+      } catch {
+        button.textContent = "다시 복사";
+        if (status) status.textContent = "복사하지 못했습니다. 코드를 선택해 직접 복사해주세요.";
+      }
+      window.setTimeout(() => { button.textContent = "코드 복사"; }, 2000);
+    });
+  });
+</script>

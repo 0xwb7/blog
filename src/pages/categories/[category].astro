@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CategoryNav from "../../components/CategoryNav.astro";
+
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+
+  const posts = await getCollection(
+    "blog",
+    ({ data }) => !data.draft
+  );
+
+  const categories = [
+    ...new Set(
+      posts.map(
+        (post) => post.data.category
+      )
+    ),
+  ];
+
+  return categories.map((category) => ({
+    params: {
+      category: category.toLowerCase(),
+    },
+
+    props: {
+      category,
+    },
+  }));
+}
+
+const { category } = Astro.props;
+
+const allPosts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+
+<BaseLayout
+  title={`${category} | 0xb7_blog`}
+>
+
+  <header class="mb-10">
+
+    <a
+      href="/posts"
+      class="text-sm text-zinc-500 transition hover:text-black"
+    >
+      ← 모든 글
+    </a>
+
+    <h1
+      class="mt-4 text-4xl font-bold"
+    >
+      Posts
+    </h1>
+
+
+
+  </header>
+
+  <CategoryNav posts={allPosts} activeCategory={category} />
+
+</BaseLayout>

@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CategoryNav from "../../components/CategoryNav.astro";
+import { getCollection } from "astro:content";
+
+const posts = (
+  await getCollection(
+    "blog",
+    ({ data }) => !data.draft
+  )
+).sort(
+  (a, b) =>
+    b.data.pubDate.getTime() -
+    a.data.pubDate.getTime()
+);
+
+---
+
+<BaseLayout title="Posts | 0xb7_blog">
+
+  <header class="mb-10">
+    <h1 class="text-4xl font-bold tracking-tight">
+      Posts
+    </h1>
+  </header>
+
+  <CategoryNav posts={posts} />
+
+</BaseLayout>

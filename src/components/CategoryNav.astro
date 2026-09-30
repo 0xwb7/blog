@@ -1,0 +1,70 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostCard from "./PostCard.astro";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+  activeCategory?: string;
+}
+
+const { posts, activeCategory = "all" } = Astro.props;
+const categories = [...new Set(posts.map((post) => post.data.category))].sort();
+const options = [
+  { value: "all", label: "All", count: posts.length },
+  ...categories.map((category) => ({
+    value: category,
+    label: category,
+    count: posts.filter((post) => post.data.category === category).length,
+  })),
+];
+---
+
+<section data-post-filter aria-label="글 목록">
+  <nav aria-label="글 카테고리" class="mb-10 flex flex-wrap gap-3">
+    {options.map(({ value, label, count }) => (
+      <button type="button" class="category-link" data-category={value}
+        aria-pressed={activeCategory === value}>
+        <span>{label}</span><span>({count})</span>
+      </button>
+    ))}
+  </nav>
+  <div class="divide-y divide-zinc-200">
+    {posts.map((post) => (
+      <div data-post-category={post.data.category}
+        hidden={activeCategory !== "all" && activeCategory !== post.data.category}>
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          category={post.data.category}
+          tags={post.data.tags}
+          href={`/posts/${post.id}`}
+        />
+      </div>
+    ))}
+  </div>
+  <p class="sr-only" role="status" aria-live="polite" data-filter-status></p>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-post-filter]").forEach((section) => {
+    const buttons = section.querySelectorAll<HTMLButtonElement>("[data-category]");
+    const posts = section.querySelectorAll<HTMLElement>("[data-post-category]");
+    const status = section.querySelector<HTMLElement>("[data-filter-status]");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const category = button.dataset.category;
+        let count = 0;
+        buttons.forEach((item) => {
+          item.setAttribute("aria-pressed", String(item === button));
+        });
+        posts.forEach((post) => {
+          post.hidden = category !== "all" && post.dataset.postCategory !== category;
+          if (!post.hidden) count += 1;
+        });
+        if (status) status.textContent = `${category === "all" ? "전체" : category}: ${count}개의 글`;
+      });
+    });
+  });
+</script>
