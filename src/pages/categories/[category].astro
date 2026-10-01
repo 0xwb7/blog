@@ -37,14 +37,14 @@ const allPosts = (await getCollection("blog", ({ data }) => !data.draft))
 ---
 
 <BaseLayout
-  title={`${category} | 0xwb7_blog`}
+  title={`${category} | 0xwb7`}
 >
 
   <header class="mb-10">
 
     <a
       href="/posts"
-      class="text-sm text-zinc-500 transition hover:text-black"
+      class="text-sm text-muted transition hover:text-foreground"
     >
       ← 모든 글
     </a>

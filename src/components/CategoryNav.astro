@@ -28,7 +28,7 @@ const options = [
       </button>
     ))}
   </nav>
-  <div class="divide-y divide-zinc-200">
+  <div class="divide-y divide-outline">
     {posts.map((post) => (
       <div data-post-category={post.data.category}
         hidden={activeCategory !== "all" && activeCategory !== post.data.category}>

@@ -7,7 +7,7 @@ const projects = [
 ---
 
 <BaseLayout
-  title="Projects | 0xwb7_blog"
+  title="Projects | 0xwb7"
 >
 
   <header class="mb-12">
@@ -24,7 +24,7 @@ const projects = [
       projects.map((project) => (
 
         <article
-          class="rounded-xl border border-zinc-200 p-6"
+          class="rounded-xl border border-outline p-6"
         >
 
           <h2
@@ -34,7 +34,7 @@ const projects = [
           </h2>
 
           <p
-            class="mt-3 leading-7 text-zinc-600"
+            class="mt-3 leading-7 text-secondary"
           >
             {project.description}
           </p>
@@ -47,7 +47,7 @@ const projects = [
               project.stack.map((technology) => (
 
                 <span
-                  class="rounded-md bg-zinc-100 px-2.5 py-1 text-xs"
+                  class="rounded-md bg-surface px-2.5 py-1 text-xs"
                 >
                   {technology}
                 </span>

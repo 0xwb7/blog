@@ -1,15 +1,48 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme inline {
+  --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-outline: var(--outline);
+}
+
 @theme {
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
 @layer base {
   html {
-    background: #fff;
-    color: var(--color-zinc-900);
+    color-scheme: light;
+    --background: #ffffff;
+    --foreground: #18181b;
+    --secondary: #52525b;
+    --muted: #666670;
+    --surface: #f4f4f5;
+    --surface-hover: #e4e4e7;
+    --outline: #e4e4e7;
+    --selected: #3f3f46;
+    --on-selected: #ffffff;
+    background: var(--background);
+    color: var(--foreground);
     font-family: var(--font-sans);
+  }
+
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --background: #18181b;
+    --foreground: #f4f4f5;
+    --secondary: #d4d4d8;
+    --muted: #a1a1aa;
+    --surface: #27272a;
+    --surface-hover: #3f3f46;
+    --outline: #3f3f46;
+    --selected: #e4e4e7;
+    --on-selected: #18181b;
   }
 
   body {
@@ -19,13 +52,13 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-zinc-700);
+    outline: 2px solid var(--secondary);
     outline-offset: 4px;
   }
 
   ::selection {
-    background: var(--color-zinc-900);
-    color: white;
+    background: var(--foreground);
+    color: var(--background);
   }
 }
 
@@ -33,7 +66,7 @@
   .site-nav-link { padding-block: 0.5rem; }
   .site-nav-link:hover,
   .site-nav-link.is-active {
-    color: var(--color-zinc-900);
+    color: var(--foreground);
     text-decoration: none;
   }
   .site-nav-link.is-active { font-weight: 600; }
@@ -45,26 +78,26 @@
     gap: 0.4rem;
     padding: 0.65rem 1.25rem;
     border-radius: 9999px;
-    background: var(--color-zinc-100);
-    color: var(--color-zinc-700);
+    background: var(--surface);
+    color: var(--secondary);
     font-size: 0.875rem;
     font-weight: 500;
   }
-  .category-link:hover { background: var(--color-zinc-200); }
+  .category-link:hover { background: var(--surface-hover); }
   .category-link[aria-pressed="true"] {
-    background: var(--color-zinc-700);
-    color: white;
+    background: var(--selected);
+    color: var(--on-selected);
   }
 
   .toc {
-    border: 1px solid var(--color-zinc-200);
+    border: 1px solid var(--outline);
     border-radius: 0.75rem;
     padding: 1.25rem;
-    background: var(--color-zinc-50);
+    background: var(--surface);
   }
   .toc summary { cursor: pointer; font-weight: 600; }
   .toc ul { margin-top: 1rem; display: grid; gap: 0.5rem; }
-  .toc a { color: var(--color-zinc-700); font-size: 0.875rem; }
+  .toc a { color: var(--secondary); font-size: 0.875rem; }
   .toc a:hover { text-decoration: underline; text-underline-offset: 0.2rem; }
   .toc-subheading { padding-left: 1rem; }
 
@@ -75,14 +108,40 @@
   .code-toolbar { display: flex; justify-content: flex-end; margin-bottom: 0.5rem; }
   .code-block pre { margin-block: 0; }
   .copy-code {
-    border: 1px solid var(--color-zinc-200);
+    border: 1px solid var(--outline);
     border-radius: 0.375rem;
     padding: 0.4rem 0.75rem;
-    color: var(--color-zinc-700);
-    background: var(--color-zinc-50);
+    color: var(--secondary);
+    background: var(--surface);
     font: inherit;
     font-size: 0.75rem;
     cursor: pointer;
   }
-  .copy-code:hover { background: var(--color-zinc-100); }
+  .copy-code:hover { background: var(--surface-hover); }
+}
+
+@layer components {
+  .theme-toggle {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    color: var(--secondary);
+    cursor: pointer;
+  }
+  .theme-toggle:hover { background: var(--surface); color: var(--foreground); }
+  .theme-sun { display: none; }
+  [data-theme="dark"] .theme-sun { display: block; }
+  [data-theme="dark"] .theme-moon { display: none; }
+  .post-content pre { border: 1px solid var(--outline); }
+}
+
+/* Shiki emits both palettes; follow the explicit site preference. */
+html[data-theme="dark"] .astro-code,
+html[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }

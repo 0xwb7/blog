@@ -7,10 +7,10 @@ const links = [
 ];
 ---
 
-<header class="border-b border-zinc-200">
+<header class="border-b border-outline">
   <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 py-5">
-    <a href="/" class="text-xl font-bold tracking-tight">0xwb7_blog</a>
-    <nav aria-label="주 메뉴" class="flex flex-wrap gap-5 text-sm text-zinc-600">
+    <a href="/" class="text-xl font-bold tracking-tight">0xwb7</a>
+    <nav aria-label="주 메뉴" class="order-3 flex w-full flex-wrap gap-5 text-sm text-secondary sm:order-none sm:ml-auto sm:w-auto">
       {links.map(({ href, label, active }) => (
         <a href={href} class:list={["site-nav-link", { "is-active": active }]}
           aria-current={path === href ? "page" : active ? "location" : undefined}>
@@ -18,5 +18,14 @@ const links = [
         </a>
       ))}
     </nav>
+    <button type="button" class="theme-toggle" data-theme-toggle aria-label="화면 모드 전환" title="화면 모드 전환">
+      <svg class="theme-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20.9 13.1A7.2 7.2 0 0 1 10.9 3.1 9 9 0 1 0 20.9 13.1Z" />
+      </svg>
+      <svg class="theme-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+      </svg>
+    </button>
   </div>
 </header>

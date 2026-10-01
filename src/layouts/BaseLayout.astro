@@ -8,7 +8,7 @@ interface Props {
 }
 
 const {
-  title = "0xwb7_blog",
+  title = "0xwb7",
   description = "개발 공부와 프로젝트 기록",
 } = Astro.props;
 ---
@@ -18,6 +18,42 @@ const {
 
   <head>
     <meta charset="UTF-8" />
+    <script is:inline>
+      (() => {
+        const key = "0xwb7-theme";
+        const system = window.matchMedia("(prefers-color-scheme: dark)");
+        let preference = null;
+        try { preference = localStorage.getItem(key); } catch {}
+        if (preference !== "light" && preference !== "dark") preference = null;
+
+        function applyTheme() {
+          const theme = preference ?? (system.matches ? "dark" : "light");
+          document.documentElement.dataset.theme = theme;
+          const button = document.querySelector("[data-theme-toggle]");
+          if (button) {
+            const label = theme === "dark" ? "일반 모드로 전환" : "야간 모드로 전환";
+            button.setAttribute("aria-label", label);
+            button.setAttribute("title", label);
+          }
+        }
+
+        // Set the palette before the first paint to avoid a bright flash.
+        applyTheme();
+        document.addEventListener("DOMContentLoaded", applyTheme, { once: true });
+        document.addEventListener("click", (event) => {
+          if (!(event.target instanceof Element) || !event.target.closest("[data-theme-toggle]")) return;
+          preference = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+          try { localStorage.setItem(key, preference); } catch {}
+          applyTheme();
+        });
+        system.addEventListener("change", () => { if (!preference) applyTheme(); });
+        window.addEventListener("storage", (event) => {
+          if (event.key !== key && event.key !== null) return;
+          preference = event.newValue === "light" || event.newValue === "dark" ? event.newValue : null;
+          applyTheme();
+        });
+      })();
+    </script>
 
     <meta
       name="viewport"

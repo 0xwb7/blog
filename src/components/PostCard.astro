@@ -30,16 +30,16 @@ const {
     >
 
       <span
-        class="font-medium text-zinc-700"
+        class="font-medium text-secondary"
       >
         {category}
       </span>
 
-      <span class="text-zinc-300">
+      <span class="text-muted">
         ·
       </span>
 
-      <time datetime={pubDate.toISOString()} class="text-zinc-500">
+      <time datetime={pubDate.toISOString()} class="text-muted">
         {
           pubDate.toLocaleDateString("ko-KR", {
             year: "numeric",
@@ -52,13 +52,13 @@ const {
     </div>
 
     <h2
-      class="text-xl font-semibold transition group-hover:text-zinc-500"
+      class="text-xl font-semibold transition group-hover:text-muted"
     >
       {title}
     </h2>
 
     <p
-      class="mt-2 leading-7 text-zinc-600"
+      class="mt-2 leading-7 text-secondary"
     >
       {description}
     </p>
@@ -70,7 +70,7 @@ const {
       {
         tags.map((tag) => (
           <span
-            class="rounded-md bg-zinc-100 px-2.5 py-1 text-xs text-zinc-600"
+            class="rounded-md bg-surface px-2.5 py-1 text-xs text-secondary"
           >
             #{tag}
           </span>
