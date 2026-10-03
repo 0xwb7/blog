@@ -132,6 +132,9 @@ const sections = headings.filter((heading) => heading.depth === 2 || heading.dep
 </BaseLayout>
 
 <script>
+  const copyIcon = '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+  const checkIcon = '<path d="m5 12 4 4L19 6"/>';
+
   document.querySelectorAll<HTMLPreElement>(".post-content pre").forEach((pre) => {
     const code = pre.querySelector("code");
     if (!code || !navigator.clipboard?.writeText) return;
@@ -139,26 +142,30 @@ const sections = headings.filter((heading) => heading.depth === 2 || heading.dep
     const wrapper = document.createElement("div");
     wrapper.className = "code-block";
     pre.before(wrapper);
-    const toolbar = document.createElement("div");
-    toolbar.className = "code-toolbar";
     const button = document.createElement("button");
     button.type = "button";
     button.className = "copy-code";
-    button.textContent = "코드 복사";
-    toolbar.append(button);
-    wrapper.append(toolbar, pre);
+    const setButtonState = (label: string, icon = copyIcon) => {
+      button.setAttribute("aria-label", label);
+      button.title = label;
+      button.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg>`;
+    };
+    setButtonState("코드 복사");
+    wrapper.append(pre, button);
+    let resetTimeout: number | undefined;
 
     button.addEventListener("click", async () => {
       const status = document.getElementById("copy-status");
+      window.clearTimeout(resetTimeout);
       try {
         await navigator.clipboard.writeText(code.textContent ?? "");
-        button.textContent = "복사 완료";
+        setButtonState("복사 완료", checkIcon);
         if (status) status.textContent = "코드를 복사했습니다.";
       } catch {
-        button.textContent = "다시 복사";
+        setButtonState("다시 복사");
         if (status) status.textContent = "복사하지 못했습니다. 코드를 선택해 직접 복사해주세요.";
       }
-      window.setTimeout(() => { button.textContent = "코드 복사"; }, 2000);
+      resetTimeout = window.setTimeout(() => { setButtonState("코드 복사"); }, 2000);
     });
   });
 </script>

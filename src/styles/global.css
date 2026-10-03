@@ -104,20 +104,38 @@
   .post-content { line-height: 1.9; }
   .post-content :is(h2, h3, h4) { scroll-margin-top: 2rem; }
   .post-content pre { overflow-x: auto; }
-  .code-block { min-width: 0; margin-block: 1.5rem; }
-  .code-toolbar { display: flex; justify-content: flex-end; margin-bottom: 0.5rem; }
-  .code-block pre { margin-block: 0; }
+  .code-block { position: relative; min-width: 0; margin-block: 1.5rem; }
+  .code-block pre { margin-block: 0; padding-right: 3.75rem; }
   .copy-code {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
     border: 1px solid var(--outline);
     border-radius: 0.375rem;
-    padding: 0.4rem 0.75rem;
     color: var(--secondary);
     background: var(--surface);
-    font: inherit;
-    font-size: 0.75rem;
     cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease;
+  }
+  .code-block:hover .copy-code,
+  .code-block:focus-within .copy-code {
+    opacity: 1;
+    pointer-events: auto;
   }
   .copy-code:hover { background: var(--surface-hover); }
+  @media (hover: none) {
+    .copy-code { opacity: 1; pointer-events: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .copy-code { transition: none; }
+  }
 }
 
 @layer components {
