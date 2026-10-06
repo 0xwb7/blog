@@ -6,7 +6,7 @@ category: AI
 tags:
   - AI
   - 하네스 엔지니어링
-  - Harness Engineering
+  - Harness
 draft: false
 ---
 
@@ -1123,7 +1123,7 @@ set -e
 
 이렇게 작성하면 `Agent`에게 단순히 “테스트해주세요.” 를 넘어
 
-```bash
+```
 작업 완료
 → verify.sh 실행
 → 성공해야 완료
@@ -1137,7 +1137,7 @@ set -e
 
 스프링 프로젝트의 invariant 예시:
 
-```bash
+```
 Controller
 ↓
 Service
@@ -1149,7 +1149,7 @@ Repository
 
 그리고 `Harness`의 `Completion flow`를
 
-```bash
+```
 Implementation
      ↓
 Unit Test
@@ -1186,7 +1186,7 @@ Complete
 
 예를 들어 아래와 같은 프로젝트는 `Harnessability` 가 낮다.
 
-```bash
+```
 실행 방법 불명확
 테스트 없음
 문서 없음
@@ -1199,7 +1199,7 @@ production과 local 환경 차이 큼
 
 반대로 이런 프로젝트는 `Harnessability` 가 높다.
 
-```bash
+```
 한 명령으로 실행
 한 명령으로 테스트
 clear architecture
@@ -1219,7 +1219,7 @@ reproducible environment
 
 나쁜 `Agent`:
 
-```bash
+```
 요구사항
 ↓
 코드 생성
@@ -1231,7 +1231,7 @@ reproducible environment
 
 좋은 `Agent`:
 
-```bash
+```
 요구사항
 ↓
 코드 생성
@@ -1268,7 +1268,7 @@ reproducible environment
 
 `Harness`를 잘 만들기 위해서 알아야 하는 것들이
 
-```bash
+```
 Architecture
 Testing
 CI/CD
