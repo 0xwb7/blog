@@ -18,6 +18,7 @@ const blog = defineCollection({
     category: z.enum([
       "Java",
       "Algorithm",
+      "AI",
     ]),
 
     tags: z.array(z.string()).default([]),
