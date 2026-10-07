@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Comments from "../../components/Comments.astro";
 
 import {
   getCollection,
@@ -124,6 +125,7 @@ const sections = headings.filter((heading) => heading.depth === 2 || heading.dep
     </div>
 
     <p id="copy-status" class="sr-only" role="status" aria-live="polite"></p>
+    <Comments />
     <footer class="mt-12 border-t border-outline pt-6">
       <a href="/posts" class="text-sm font-medium text-secondary hover:text-foreground">← 모든 글 보기</a>
     </footer>

@@ -1,0 +1,53 @@
+---
+const categoryId = "DIC_kwDOUyE7684DHOLG";
+const category = "Announcements";
+---
+
+<section class="mt-12" aria-label="댓글">
+  <div id="comments" class="giscus">
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo="0xwb7/blog"
+      data-repo-id="R_kgDOUyE76w"
+      data-category={category}
+      data-category-id={categoryId}
+      data-mapping="pathname"
+      data-strict="1"
+      data-reactions-enabled="0"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="ko"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    ></script>
+  </div>
+</section>
+
+<script>
+  const comments = document.querySelector("#comments");
+
+  if (comments) {
+    const updateTheme = () => {
+      const iframe = comments.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
+      iframe?.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme: document.documentElement.dataset.theme === "dark" ? "dark" : "light" } } },
+        "https://giscus.app",
+      );
+    };
+
+    const commentsObserver = new MutationObserver(() => {
+      const iframe = comments.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
+      if (iframe && !iframe.dataset.themeListener) {
+        iframe.dataset.themeListener = "true";
+        iframe.addEventListener("load", updateTheme);
+      }
+    });
+    commentsObserver.observe(comments, { childList: true });
+
+    const themeObserver = new MutationObserver(updateTheme);
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  }
+</script>
