@@ -6,7 +6,7 @@ category: AI
 tags:
   - AI
   - 하네스 엔지니어링
-  - Harness
+  - Harness Engineering
 draft: false
 ---
 
