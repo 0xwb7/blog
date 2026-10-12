@@ -27,6 +27,8 @@ draft: false
 
 이번 글은 위 질문들을 이해하고, 스스로 답할 수 있도록 하는 것을 목표로 하겠다.
 
+---
+
 # 1. Spring Security를 이해하기 위한 기초
 
 ## 1. Spring Security란 무엇인가 ?
