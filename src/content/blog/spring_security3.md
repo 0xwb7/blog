@@ -1,7 +1,7 @@
 ---
 title: "Spring Security - 3"
 description: "Spring Security를 더 깊게 이해하기 위해 공부한 글입니다."
-pubDate: 2026-10-13
+pubDate: 2026-10-14
 category: Java
 tags:
   - Spring
