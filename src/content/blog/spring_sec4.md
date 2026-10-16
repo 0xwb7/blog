@@ -6,7 +6,6 @@ category: Java
 tags:
   - Java
   - Spring
-  - 객체지향
   - SOLID
   - IoC
   - DI
