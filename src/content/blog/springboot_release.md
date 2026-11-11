@@ -514,6 +514,7 @@ public @Nullable MasterReplica getMasterReplica() {
 @Override
 public @Nullable MasterReplica getMasterReplica() {
 		DataRedisProperties.Masterreplica masterreplica = this.properties.getMasterreplica();
+    
 		return (masterreplica != null) 
 		? new PropertiesMasterReplica(
 					getStandalone().getDatabase(),
