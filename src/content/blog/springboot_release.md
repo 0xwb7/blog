@@ -30,7 +30,7 @@ RC 버전이긴 했지만 ‘스프링 부트 3.5.x에서 4.1.2로 바꾼지 얼
 spring.data.redis.database is now applied to master/replica connections.
 ```
 
-`spring.data.redis.database`가 뭔지는 정확히 모르겠지만, Master/Replica 연결에 이제야 적용된다고 한다.
+`spring.data.redis.database`가 뭔지는 정확히 모르겠지만, Master/Replica 연결이 이제야 적용된다고 한다.
 
 무슨 의미인지 궁금해서 릴리스를 확인해 봤다.
 https://github.com/spring-projects/spring-boot/releases/tag/v4.2.0-RC2
@@ -47,7 +47,7 @@ Redis는 프로젝트를 하면서 몇 번 다뤄보긴 했지만 `spring.data.r
 
 또 기존에 무시되던 설정이 정상적으로 적용된다면, 어떤 영향을 미칠 수 있는지에 대해서도 궁금해졌다.
 
-그래서 이번 글에서는 Redis와 Master/Replica 구조부터 살펴보고, 버그와 수정 이후의 변화에 대해서 알아보려고 한다.
+이번 글에서는 Redis와 Master/Replica 구조부터 살펴보고, 버그와 수정 이후의 변화에 대해서 알아보고자 한다.
 
 ---
 
@@ -63,8 +63,6 @@ Redis(Remote Dictionary Server)는 메모리 기반의 `Key-Value`데이터 저�
 
 - RDB(Redis Database): 특정 시점의 데이터를 스냅샷으로 저장
 - AOF(Append Only File): 데이터 변경 명령을 로그로 기록하고, 재시작 시 이를 재실행하여 데이터 복구
-
-즉, Redis는 단순한 캐시가 아니라 데이터를 저장하고 관리할 수 있는 DBMS의 한 종류인 것이다.
 
 ### Redis의 논리적 데이터베이스
 
@@ -243,7 +241,7 @@ spring:
 
 `spring.data.redis.masterreplica.nodes`를 설정하면 `DataRedisConnectionConfiguration`이 `RedisStaticMasterReplicaConfiguration`을 생성하는데, 
 
-문제는 `RedisStaticMasterReplicaConfiguration` 객체를 생성하는 과정에서 사용자가 지정한 데이터베이스 번호가 전달되지 않았다는 것이다.
+문제는 이 객체를 생성하는 과정에서 사용자가 지정한 데이터베이스 번호가 전달되지 않았다는 것이다.
 
 조금 더 구체적으로 살펴보도록 하자.
 
@@ -253,7 +251,7 @@ Spring Boot에는 Redis 연결에 필요한 정보를 제공하는 `DataRedisCon
 
 따라서 `spring.data.redis.database`에 DB 2를 지정해줘도, 해당 값이 Master/Replica 연결 설정까지 전달되지 못했던 것이었고,
 
-결과적으로 연결 설정에는 기본값인 DB 0이 사용되었다.
+결과적으로 연결 설정에는 기본값이 사용되었다.
 
 이 말은 즉, `spring.data.redis.database`에서 지정한 DB 번호가 무시되어, 항상 DB 0을 사용했다는 것이다.
 
@@ -345,7 +343,7 @@ public class RedisTestApplication {
                      SpringApplication.run(
                              RedisTestApplication.class, args
                      )) {
-            // 실험 종료 후 return;
+            // 실험 종료하면 끝
         }
     }
 
@@ -434,7 +432,7 @@ After write: saved-by-4.1.2
 (nil)
 ```
 
-DB 1을 사용하도록 설정했지만 출력을 보면 실제로는 DB 0에 데이터를 저장했음을 알 수 있다.
+DB 1을 사용하도록 설정했지만 출력을 보면 실제로는 DB 1에 데이터가 저장되지 않았음을 알 수 있다.
 
 ## 테스트 (4.2.0-RC2)
 
@@ -459,6 +457,7 @@ After write: saved-by-4.2.0-RC2
 ## 버그 수정
 
 그렇다면 4.2.0-RC2에서는 이 문제를 어떻게 해결했을지 알아보기 위해 PR #52189의 File Changed를 살펴봤다.
+(https://github.com/spring-projects/spring-boot/pull/52189/changes)
 
 ### 1. DataRedisConnectionDetails.java
 
@@ -504,9 +503,8 @@ OCP를 위반하지 않도록 수정한 걸 볼 수 있다.
 ```java
 // 4.1.2
 @Override
-	public @Nullable MasterReplica getMasterReplica() {
-		DataRedisProperties.Masterreplica masterreplica 
-																	   = this.properties.getMasterreplica();
+public @Nullable MasterReplica getMasterReplica() {
+    DataRedisProperties.Masterreplica masterreplica = this.properties.getMasterreplica();
 		return (masterreplica != null) 
 		    ? new PropertiesMasterReplica(masterreplica) 
 		    : null;
@@ -514,9 +512,8 @@ OCP를 위반하지 않도록 수정한 걸 볼 수 있다.
 
 // 4.2.0-RC2
 @Override
-	public @Nullable MasterReplica getMasterReplica() {
-		DataRedisProperties.Masterreplica masterreplica 
-																		= this.properties.getMasterreplica();
+public @Nullable MasterReplica getMasterReplica() {
+		DataRedisProperties.Masterreplica masterreplica = this.properties.getMasterreplica();
 		return (masterreplica != null) 
 		? new PropertiesMasterReplica(
 					getStandalone().getDatabase(),
@@ -536,8 +533,8 @@ OCP를 위반하지 않도록 수정한 걸 볼 수 있다.
 
 ```java
 @Override
-		public int getDatabase() {
-			return this.database;
+public int getDatabase() {
+    return this.database;
 }
 ```
 
